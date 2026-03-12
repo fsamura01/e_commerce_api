@@ -125,7 +125,7 @@ const login = async (req, res) => {
         }
 
         const existingUser = await db.query(
-            'SELECT id, password_hash FROM users WHERE email = $1',
+            'SELECT id, password_hash, role, first_name, last_name FROM users WHERE email = $1',
             [email]
         );
 

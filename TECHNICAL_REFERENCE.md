@@ -64,6 +64,42 @@ Understanding how connections are managed is key to preventing app crashes:
 
 ---
 
+## 🛡️ 5. Middleware Implementation (Auth)
+### **Token Extraction (Bearer Pattern)**
+Our `authenticate` middleware uses the **Bearer Token** standard.
+- **The Protocol**: The client sends the token in the header as `Authorization: Bearer <your_token_here>`.
+- **The Logic**: We use `req.headers.authorization.split(' ')[1]` to extract the second part (the actual token).
+- **Security Check**: If the header is missing or doesn't start with `Bearer`, we block the request before it even hits the controller. 
+- **The Result**: If valid, we store the decoded user data in `req.user`, making it accessible to any subsequent route.
+
+### **Testing Regular User Middleware**
+
+```javascript
+app.get('/api/test-auth', authenticate, (req, res) => {
+    res.json({ message: 'Success!  You are authenticated.', user: req.user });
+});
+```
+- **GET vs POST**: You can test middleware with any HTTP method.
+- **Why GET is used for testing**: It’s simpler because you don't need a request body—just the Authorization Header.
+- **Pro-Tip**: During development, use a dedicated `/api/test-auth` route. Once your middleware works, you can apply it to sensitive routes (like `app.get('/profile', authenticate, controller.profile)`).
+
+### **Testing Admin Middleware**
+
+# 1. No token → should get 401
+POST http://localhost:5000/products
+(no Authorization header)
+
+# 2. Customer token → should get 403
+POST http://localhost:5000/products
+Authorization: Bearer <token from test@email.com login>
+
+# 3. Admin token → should get through ✅
+POST http://localhost:5000/products
+Authorization: Bearer <token from admin@myshop.com login>
+
+---
+
+
 ## 🧪 5. Verification Checklist
 When testing a new feature:
 1. **Restart Server**: `npm run dev` (monitors file changes).

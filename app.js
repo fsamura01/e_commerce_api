@@ -3,10 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./server/src/db/index');
+const authenticate = require('./server/src/middleware/authenticate');
+const productRoutes = require('./server/src/routes/products');
 
 // Create Express application
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 
 // Middleware setup
 app.use(cors()); // Allow cross-origin requests from your React app
@@ -19,7 +22,7 @@ const authRoutes = require('./server/src/routes/auth');
 
 app.use('/api/auth', authRoutes);
 // Future routes:
-// app.use('/products', productRoutes);
+app.use('/api/products', productRoutes);
 // app.use('/cart',     cartRoutes);
 // app.use('/orders',   orderRoutes);
 

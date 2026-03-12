@@ -4,9 +4,9 @@
 //  Each route maps a URL + method to a controller
 // ================================================
 
-const express        = require('express');
-const router         = express.Router();
-const { register, login }   = require('../controllers/authController');
+const express = require('express');
+const router = express.Router();
+const { register, login } = require('../controllers/authController');
 
 // POST /auth/register
 // Public route — no authentication needed
