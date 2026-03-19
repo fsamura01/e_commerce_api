@@ -38,28 +38,29 @@ INSERT INTO categories (name, description) VALUES
 INSERT INTO users (email, password_hash, first_name, last_name, role) VALUES
     (
         'admin@myshop.com',
-        '$2b$10$FAKE_HASH_PLACEHOLDER_ADMIN_DO_NOT_USE',
+        '$2b$10$TY8CGrecXP390vlpIIQqIuxSfqLhrffmO5fRy.UR60yHLIJXrr5Se
+        ',
         'Admin',
         'User',
         'admin'
     ),
     (
         'john@email.com',
-        '$2b$10$FAKE_HASH_PLACEHOLDER_JOHN_DO_NOT_USE',
+        '$2b$10$26eoRCW6Kj1tl5kTPPNRuunmqvOVQ3AUQSbXq47ovoMlYQFX6lPfC',
         'John',
         'Doe',
         'customer'
     ),
     (
         'sarah@email.com',
-        '$2b$10$FAKE_HASH_PLACEHOLDER_SARAH_DO_NOT_USE',
+        '$2b$10$48zsrJgaQAX0wAf4FaRJB.rKLOzDUbg228d0oarxprov/iUbPic56',
         'Sarah',
         'Smith',
         'customer'
     ),
     (
         'mike@email.com',
-        '$2b$10$FAKE_HASH_PLACEHOLDER_MIKE_DO_NOT_USE',
+        '$2b$10$s63aqcgP7qx3f2bamgw3LuMH0ro9OsVGgvsS3hP/sDFB.R/aPJopS',
         'Mike',
         'Johnson',
         'customer'

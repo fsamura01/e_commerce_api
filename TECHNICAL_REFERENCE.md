@@ -99,8 +99,23 @@ Authorization: Bearer <token from admin@myshop.com login>
 
 ---
 
+## 🛣️ 6. Routing with express.Router()
+### **Mount Points & Relative Paths**
+Routers allow us to build the API like a Lego set—organized and modular.
+- **The Mount Point (in `app.js`)**: We assign a permanent prefix like `app.use('/api/products', productRoutes)`.
+- **The Relative Path (inside the Router file)**: Inside the Router, we only focus on the action (e.g., `router.get('/search', ...)`). The final URL is automatically combined: `/api/products` + `/search`.
+- **Why it's Cleaner**: It removes repetitive path typing and makes the code "Context Aware"—when you are in the `products.js` file, you only worry about product logic.
 
-## 🧪 5. Verification Checklist
+### **Benefits**
+1. **Isolation**: You can apply middleware (like `authenticate`) to an entire router at once using `router.use(middleware)`.
+2. **Maintenance**: If you need to change a base URL (e.g., from `/api` to `/v2`), you only change it in **one line** in `app.js`.
+3. **Collaboration**: Different developers can work on different router files (Cart, Auth, Products) without cluttering the main `app.js`.
+
+---
+
+
+
+## 🧪 7. Verification Checklist
 When testing a new feature:
 1. **Restart Server**: `npm run dev` (monitors file changes).
 2. **Environment**: Ensure `.env` contains all keys from `.env.example`.

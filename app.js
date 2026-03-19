@@ -5,6 +5,9 @@ const cors = require('cors');
 const db = require('./server/src/db/index');
 const authenticate = require('./server/src/middleware/authenticate');
 const productRoutes = require('./server/src/routes/products');
+const cartRoutes  = require('./server/src/routes/cart');
+const checkoutRoutes = require('./server/src/routes/checkout');
+const orderRoutes = require('./server/src/routes/orders');
 
 // Create Express application
 const app = express();
@@ -21,16 +24,16 @@ db.testConnection();
 const authRoutes = require('./server/src/routes/auth');
 
 app.use('/api/auth', authRoutes);
-// Future routes:
 app.use('/api/products', productRoutes);
-// app.use('/cart',     cartRoutes);
-// app.use('/orders',   orderRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/checkout', checkoutRoutes);
+app.use('/api/orders',   orderRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: '🛍️  E-Commerce API is running' });
 });
 
-
+//  GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err.message);
     res.status(500).json({ error: 'Something went wrong' });

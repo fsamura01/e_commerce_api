@@ -10,7 +10,7 @@ const express      = require('express');
 const router       = express.Router();
 const authenticate = require('../middleware/authenticate');
 const isAdmin = require('../middleware/isAdmin');
-const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productControllers');
+const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
 
 
 // ------------------------------------------------
