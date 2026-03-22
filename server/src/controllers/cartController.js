@@ -1,6 +1,6 @@
 const db = require('../db');
 
-const getCart = async (req, res) => {
+const getCart = async (req, res, next) => {
     try {
         const userId = req.user.id;
  
@@ -38,12 +38,12 @@ const getCart = async (req, res) => {
  
     } catch (error) {
         console.error('getCart error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const { product_id, quantity = 1 } = req.body;
@@ -104,11 +104,11 @@ const addToCart = async (req, res) => {
  
     } catch (error) {
         console.error('addToCart error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
-const updateCartItem = async (req, res) => {
+const updateCartItem = async (req, res, next) => {
     try {
         const userId    = req.user.id;
         const productId = req.params.productId;
@@ -169,11 +169,11 @@ const updateCartItem = async (req, res) => {
  
     } catch (error) {
         console.error('updateCartItem error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
-const removeCartItem = async (req, res) => {
+const removeCartItem = async (req, res, next) => {
     try {
         const userId    = req.user.id;
         const productId = req.params.productId;
@@ -195,11 +195,11 @@ const removeCartItem = async (req, res) => {
  
     } catch (error) {
         console.error('removeCartItem error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
  
-const clearCart = async (req, res) => {
+const clearCart = async (req, res, next) => {
     try {
         const userId = req.user.id;
  
@@ -212,7 +212,7 @@ const clearCart = async (req, res) => {
  
     } catch (error) {
         console.error('clearCart error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 

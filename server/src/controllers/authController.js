@@ -39,7 +39,7 @@ const createToken = (user) => {
 //  4. Insert the new user into the database
 //  5. Sign a JWT and return it
 // ------------------------------------------------
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     try {
         // STEP 1: Pull data from the request body
         const { email, password, first_name, last_name } = req.body;
@@ -110,11 +110,11 @@ const register = async (req, res) => {
 
     } catch (error) {
         console.error('Register error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -161,7 +161,7 @@ const login = async (req, res) => {
         });
     } catch (error) {
         console.error('Login error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 

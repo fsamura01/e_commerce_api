@@ -25,7 +25,7 @@ const db = require('../db');
 //  conditions into an array and values into a params array.
 //  This keeps the code clean and prevents SQL injection.
 // ------------------------------------------------
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
     try {
         const { search, category, minPrice, maxPrice } = req.query;
 
@@ -91,7 +91,7 @@ const getAllProducts = async (req, res) => {
 
     } catch (error) {
         console.error('getAllProducts error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
@@ -100,7 +100,7 @@ const getAllProducts = async (req, res) => {
 //  GET /products/:id
 //  Public — returns a single product by ID
 // ------------------------------------------------
-const getProductById = async (req, res) => {
+const getProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -130,7 +130,7 @@ const getProductById = async (req, res) => {
 
     } catch (error) {
         console.error('getProductById error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
@@ -142,7 +142,7 @@ const getProductById = async (req, res) => {
 //  Required fields: name, price, stock
 //  Optional fields: description, category_id
 // ------------------------------------------------
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
     try {
         const { name, description, price, stock, category_id } = req.body;
 
@@ -191,7 +191,7 @@ const createProduct = async (req, res) => {
 
     } catch (error) {
         console.error('createProduct error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
@@ -207,7 +207,7 @@ const createProduct = async (req, res) => {
 //  Same dynamic building trick as getAllProducts —
 //  we only SET the columns the client actually sent.
 // ------------------------------------------------
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
     try {
         const { id }  = req.params;
         const { name, description, price, stock, category_id, is_active } = req.body;
@@ -286,7 +286,7 @@ const updateProduct = async (req, res) => {
 
     } catch (error) {
         console.error('updateProduct error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
@@ -303,7 +303,7 @@ const updateProduct = async (req, res) => {
 //  product disappears from public listings but all
 //  historical order data stays intact.
 // ------------------------------------------------
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -326,10 +326,9 @@ const deleteProduct = async (req, res) => {
 
     } catch (error) {
         console.error('deleteProduct error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
-
 
 module.exports = {
     getAllProducts,

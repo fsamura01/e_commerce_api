@@ -14,7 +14,7 @@ const db = require('../db');
 //  Returns all orders for the logged in user
 //  Most recent order first
 // ------------------------------------------------
-const getOrders = async (req, res) => {
+const getOrders = async (req, res, next) => {
     try {
         const userId = req.user.id;
 
@@ -38,7 +38,7 @@ const getOrders = async (req, res) => {
 
     } catch (error) {
         console.error('getOrders error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
@@ -51,7 +51,7 @@ const getOrders = async (req, res) => {
 //  checkout — not the current product price
 //  This is what keeps receipts accurate forever
 // ------------------------------------------------
-const getOrderById = async (req, res) => {
+const getOrderById = async (req, res, next) => {
     try {
         const userId  = req.user.id;
         const orderId = req.params.id;
@@ -96,7 +96,7 @@ const getOrderById = async (req, res) => {
 
     } catch (error) {
         console.error('getOrderById error:', error.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 };
 
