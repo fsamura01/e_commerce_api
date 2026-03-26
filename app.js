@@ -4,6 +4,7 @@ const express = require('express');
 const helmet = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const cors = require('cors');
+const path = require('path');
 const db = require('./server/src/db/index');
 const authenticate = require('./server/src/middleware/authenticate');
 const productRoutes = require('./server/src/routes/products');
@@ -59,8 +60,8 @@ app.use('/api/cart', apiLimiter, cartRoutes);
 app.use('/api/checkout', apiLimiter, checkoutRoutes);
 app.use('/api/orders', apiLimiter, orderRoutes);
 app.set('view engine', 'ejs');
-app.set('views', './views');
-app.use(express.static('public'));
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', frontendRoutes);
