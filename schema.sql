@@ -8,7 +8,8 @@
 --    psql -U ecommerce_user -d ecommerce_db -f schema.sql
 -- ============================================================
 
--- Make sure we are using the right schema
+-- Make sure the schema exists and use it
+CREATE SCHEMA IF NOT EXISTS ecommerce;
 SET search_path TO ecommerce, public;
 
 
@@ -143,9 +144,6 @@ CREATE INDEX idx_order_items_order  ON order_items(order_id);
 
 -- Look up users by email (used on every login)
 CREATE UNIQUE INDEX idx_users_email ON users(email);
-
--- Look up users by username (used on every login)
-CREATE UNIQUE INDEX idx_users_username ON users(username);
 
 
 

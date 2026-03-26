@@ -11,6 +11,13 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000, 
 });
 
+// Set the search path for every new connection to use our schema
+pool.on('connect', (client) => {
+    client.query('SET search_path TO ecommerce, public').catch(err => {
+        console.error('Error setting search path:', err);
+    });
+});
+
 // Helper function to run queries with error handling
 const query = async (text, params) => {
     const start = Date.now();
