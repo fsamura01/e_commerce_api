@@ -4,10 +4,11 @@ require('dotenv').config();
 // Create a connection pool using environment variables
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    // These settings help manage connections efficiently
-    max: 10, // Maximum number of clients in the pool
-    idleTimeoutMillis: 30000, // How long a client can be idle before being closed
-    connectionTimeoutMillis: 2000, // How long to wait when connecting
+    // Add SSL for production platforms like Neon/Render, disable for local
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 10, 
+    idleTimeoutMillis: 30000, 
+    connectionTimeoutMillis: 2000, 
 });
 
 // Helper function to run queries with error handling
