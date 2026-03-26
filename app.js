@@ -7,19 +7,25 @@ const cors = require('cors');
 const db = require('./server/src/db/index');
 const authenticate = require('./server/src/middleware/authenticate');
 const productRoutes = require('./server/src/routes/products');
+const categoryRoutes = require('./server/src/routes/categories');
 const cartRoutes  = require('./server/src/routes/cart');
 const checkoutRoutes = require('./server/src/routes/checkout');
 const orderRoutes = require('./server/src/routes/orders');
+const frontendRoutes = require('./server/src/routes/frontend');
 
 // Create Express application
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 
+const cookieParser = require('cookie-parser');
+
 // Middleware setup
 app.use(helmet());
 app.use(cors()); // Allow cross-origin requests from your React app
 app.use(express.json()); // Parse JSON request bodies
+app.use(express.urlencoded({ extended: true })); // Parse HTML form submissions
+app.use(cookieParser()); // Parse cookies sent by the browser
 
 // Strict limiter for auth routes
 const authLimiter = rateLimit({
@@ -48,9 +54,16 @@ const authRoutes = require('./server/src/routes/auth');
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', apiLimiter, productRoutes);
+app.use('/api/categories', apiLimiter, categoryRoutes);
 app.use('/api/cart', apiLimiter, cartRoutes);
 app.use('/api/checkout', apiLimiter, checkoutRoutes);
-app.use('/api/orders',   apiLimiter, orderRoutes);
+app.use('/api/orders', apiLimiter, orderRoutes);
+app.set('view engine', 'ejs');
+app.set('views', './views');
+app.use(express.static('public'));
+
+
+app.use('/', frontendRoutes);
 
 //  HEALTH CHECK
 app.get('/', (req, res) => {
@@ -58,11 +71,7 @@ app.get('/', (req, res) => {
   
 });
 
-app.get('/test-error', (req, res, next) => {  
-    const error = new Error('This is a test error');
-    error.status = 418;
-    next(error);
-});
+
 
 //  404 HANDLER
 app.use((req, res) => {

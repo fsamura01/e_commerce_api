@@ -14,6 +14,7 @@ A robust and scalable RESTful E-Commerce API built with Node.js, Express, and Po
 ## 🚀 Features
 
 - **User Management**: Authentication-ready schema for customers and admins using JWT.
+- **Admin Dashboard UI**: Built-in visual interface for admins to add, edit, and soft-delete products directly from the browser.
 - **Product Catalog**: Efficient organization with categories, detailed product information, and search/filtering.
 - **Shopping Cart**: Persistent cart management for registered users.
 - **Checkout & Payments**: Secure payment processing integration with Stripe.
@@ -30,6 +31,7 @@ A robust and scalable RESTful E-Commerce API built with Node.js, Express, and Po
 |----------------------|------------------------------|
 | Node.js + Express    | HTTP server and routing      |
 | PostgreSQL           | Database                     |
+| EJS                  | Frontend HTML templates      |
 | bcrypt               | Password hashing             |
 | jsonwebtoken         | Authentication tokens        |
 | Stripe               | Payment processing           |
@@ -160,6 +162,19 @@ Tokens expire after **7 days**. Log in again to get a fresh token.
 | All other routes  | 100 requests per 15 minutes|
 
 Exceeding the limit returns `429 Too Many Requests`.
+
+---
+
+## 👑 Admin GUI Dashboard
+
+A built-in HTML interface has been added for administrators to intuitively manage the store's inventory right from the browser. 
+
+- **Access URL**: `/login`
+- **Test Admin Credentials**: `admin@myshop.com` / `Password123!`
+- **Capabilities**: 
+  - **Add Products**: Dedicated form to populate new inventory item data.
+  - **Edit Products**: Safely update a product's details and active stock from its page.
+  - **Soft-Delete Products**: Remove a product from public visibility without breaking historical order data attached to it.
 
 ---
 

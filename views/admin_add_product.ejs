@@ -1,0 +1,31 @@
+<%- include('partials/header', { title: 'Add Product' }) %>
+
+<div class="form-container">
+    <h2>Add New Product</h2>
+    
+    <form action="/admin/products/new" method="POST">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="description">Description (optional)</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+        
+        <label for="price">Price</label>
+        <input type="number" id="price" name="price" step="0.01" min="0" required>
+        
+        <label for="stock">Stock Quantity</label>
+        <input type="number" id="stock" name="stock" min="0" required>
+        
+        <label for="category_id">Category</label>
+        <select id="category_id" name="category_id" required>
+            <option value="">-- Select a Category --</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category.id %>"><%= category.name %></option>
+            <% }) %>
+        </select>
+        
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">Add Product</button>
+    </form>
+</div>
+
+<%- include('partials/footer') %>

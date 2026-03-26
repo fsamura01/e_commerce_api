@@ -1,0 +1,154 @@
+<%- include('partials/header', { title: 'Checkout', cartCount, user }) %>
+
+<h1 class="page-title">Checkout</h1>
+<p class="page-subtitle">Complete your purchase securely</p>
+
+<div class="checkout-layout">
+
+    <!-- LEFT: Stripe payment form -->
+    <div class="checkout-form">
+        <h2 class="form-title">Payment Details</h2>
+
+        <!--
+            EJS NOTE: This form does NOT use method="POST" action="..."
+            like normal forms. Instead, JavaScript intercepts the submit,
+            calls Stripe.js to tokenise the card, then sends the token
+            to your server via fetch(). This is how Stripe works —
+            the raw card number never touches your server.
+        -->
+        <form id="payment-form">
+
+            <div class="form-group">
+                <label class="form-label">Card Details</label>
+                <!--
+                    Stripe mounts its own secure card input here.
+                    You never touch the card number directly.
+                    Stripe injects an iframe into this div.
+                -->
+                <div id="card-element"></div>
+                <div id="card-errors"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="pay-btn">
+                Pay $<%= Number(cart_total).toFixed(2) %>
+            </button>
+        </form>
+
+        <p style="font-size: 12px; color: var(--muted); margin-top: 16px; text-align: center">
+            🔒 Secured by Stripe · Test card: 4242 4242 4242 4242
+        </p>
+    </div>
+
+    <!-- RIGHT: order summary -->
+    <div class="order-summary">
+        <h2 class="summary-title">Order Summary</h2>
+
+        <% items.forEach(item => { %>
+        <div class="summary-row">
+            <span class="summary-label"><%= item.name %> × <%= item.quantity %></span>
+            <span>$<%= Number(item.subtotal).toFixed(2) %></span>
+        </div>
+        <% }) %>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span>$<%= Number(cart_total).toFixed(2) %></span>
+        </div>
+    </div>
+
+</div>
+
+<!--
+    STRIPE.JS INTEGRATION
+    =====================
+    Step 1: Load Stripe.js from Stripe's CDN (never self-host this)
+    Step 2: Initialise with your PUBLISHABLE key (pk_test_...)
+    Step 3: Mount the card element into #card-element
+    Step 4: On form submit:
+            a) Call /api/checkout/create-payment-intent to get client_secret
+            b) Call stripe.confirmCardPayment() with the client_secret
+            c) Stripe collects and tokenises the card securely
+            d) On success, call /api/checkout/confirm to create the order
+-->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Your publishable key is safe to expose in frontend code
+    // It can only be used to collect payments, not access your account
+    const stripe   = Stripe('<%= stripePublicKey %>');
+    const elements = stripe.elements();
+
+    // Mount Stripe's card UI into the #card-element div
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                color:           '#e8e8e8',
+                fontFamily:      "'DM Mono', monospace",
+                fontSize:        '15px',
+                '::placeholder': { color: '#555' },
+            },
+            invalid: { color: '#e05c5c' }
+        }
+    });
+    cardElement.mount('#card-element');
+
+    // Show card validation errors in real time
+    cardElement.on('change', (event) => {
+        const display = document.getElementById('card-errors');
+        display.textContent = event.error ? event.error.message : '';
+    });
+
+    // Handle form submission
+    document.getElementById('payment-form').addEventListener('submit', async (e) => {
+        e.preventDefault();  // stop normal form POST
+
+        const btn = document.getElementById('pay-btn');
+        btn.disabled    = true;
+        btn.textContent = 'Processing...';
+
+        try {
+            // Step 1: Ask your server to create a PaymentIntent
+            const intentRes = await fetch('/api/checkout/create-payment-intent', {
+                method:  'POST',
+                headers: {
+                    'Content-Type':  'application/json',
+                    'Authorization': 'Bearer <%= token %>'
+                }
+            });
+            const intentData = await intentRes.json();
+
+            if (!intentRes.ok) throw new Error(intentData.error);
+
+            // Step 2: Confirm the payment with Stripe.js
+            // Stripe collects and verifies the card securely here
+            const { error, paymentIntent } = await stripe.confirmCardPayment(
+                intentData.client_secret,
+                { payment_method: { card: cardElement } }
+            );
+
+            if (error) throw new Error(error.message);
+
+            // Step 3: Tell your server payment succeeded
+            const confirmRes = await fetch('/api/checkout/confirm', {
+                method:  'POST',
+                headers: {
+                    'Content-Type':  'application/json',
+                    'Authorization': 'Bearer <%= token %>'
+                },
+                body: JSON.stringify({ payment_intent_id: paymentIntent.id })
+            });
+            const confirmData = await confirmRes.json();
+
+            if (!confirmRes.ok) throw new Error(confirmData.error);
+
+            // Step 4: Redirect to orders page on success
+            window.location.href = '/orders?success=1';
+
+        } catch (err) {
+            document.getElementById('card-errors').textContent = err.message;
+            btn.disabled    = false;
+            btn.textContent = 'Pay $<%= Number(cart_total).toFixed(2) %>';
+        }
+    });
+</script>
+
+<%- include('partials/footer') %>

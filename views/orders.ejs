@@ -1,0 +1,57 @@
+<%- include('partials/header', { title: 'My Orders', cartCount, user }) %>
+
+<h1 class="page-title">My Orders</h1>
+<p class="page-subtitle"><%= orders.length %> order<%= orders.length !== 1 ? 's' : '' %> placed</p>
+
+<% if (orders.length === 0) { %>
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p class="empty-state-text">No orders yet</p>
+        <p class="empty-state-sub">Your completed orders will appear here</p>
+        <a href="/products" class="btn btn-primary">Start shopping</a>
+    </div>
+<% } else { %>
+
+    <div class="orders-list">
+        <% orders.forEach(order => { %>
+        <div class="order-card">
+
+            <div class="order-header">
+                <div>
+                    <p class="order-id">Order #<%= order.id %></p>
+                    <!-- Format the date nicely -->
+                    <p style="font-size:13px; color:var(--muted); margin-top:4px">
+                        <%= new Date(order.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        }) %>
+                    </p>
+                </div>
+                <span class="order-status status-<%= order.status %>">
+                    <%= order.status %>
+                </span>
+                <span class="order-total">$<%= Number(order.total).toFixed(2) %></span>
+            </div>
+
+            <!-- Show items if they were fetched -->
+            <% if (order.items && order.items.length > 0) { %>
+            <div class="order-items-list">
+                <% order.items.forEach(item => { %>
+                <div class="order-item-row">
+                    <span class="order-item-name"><%= item.name %></span>
+                    <span class="order-item-meta">
+                        <%= item.quantity %> × $<%= Number(item.price_at_purchase).toFixed(2) %>
+                        &nbsp;·&nbsp;
+                        $<%= Number(item.subtotal).toFixed(2) %>
+                    </span>
+                </div>
+                <% }) %>
+            </div>
+            <% } %>
+
+        </div>
+        <% }) %>
+    </div>
+
+<% } %>
+
+<%- include('partials/footer') %>

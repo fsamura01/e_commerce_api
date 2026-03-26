@@ -1,0 +1,85 @@
+<%- include('partials/header', { title: 'Products', cartCount, user }) %>
+
+<h1 class="page-title">Our Products</h1>
+<p class="page-subtitle"><%= products.length %> items available</p>
+
+<!-- SEARCH & FILTER FORM -->
+<!--
+    EJS NOTE: This is a plain HTML form using GET method.
+    When submitted, the values become query params in the URL:
+    /products?search=headphones&category=1&minPrice=10
+    Your Express route reads them with req.query
+-->
+<form class="search-bar" method="GET" action="/products">
+    <input
+        type="text"
+        name="search"
+        placeholder="Search products..."
+        value="<%= typeof query.search !== 'undefined' ? query.search : '' %>"
+    />
+    <select name="category">
+        <option value="">All categories</option>
+        <% categories.forEach(cat => { %>
+            <option
+                value="<%= cat.id %>"
+                <%= typeof query.category !== 'undefined' && query.category == cat.id ? 'selected' : '' %>
+            >
+                <%= cat.name %>
+            </option>
+        <% }) %>
+    </select>
+    <input
+        type="number"
+        name="minPrice"
+        placeholder="Min price"
+        value="<%= typeof query.minPrice !== 'undefined' ? query.minPrice : '' %>"
+        style="width: 120px"
+    />
+    <input
+        type="number"
+        name="maxPrice"
+        placeholder="Max price"
+        value="<%= typeof query.maxPrice !== 'undefined' ? query.maxPrice : '' %>"
+        style="width: 120px"
+    />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="/products" class="btn btn-outline">Reset</a>
+</form>
+
+<!-- PRODUCTS GRID -->
+<!--
+    EJS NOTE: < % % > runs JavaScript (no output)
+              < %= % > outputs a value (HTML-escaped)
+              < %- % > outputs raw HTML (unescaped)
+-->
+<% if (products.length === 0) { %>
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p class="empty-state-text">No products found</p>
+        <p class="empty-state-sub">Try a different search or reset the filters</p>
+        <a href="/products" class="btn btn-outline">View all products</a>
+    </div>
+<% } else { %>
+    <div class="products-grid">
+        <% products.forEach(product => { %>
+            <!-- Each product card is a link to the detail page -->
+            <a href="/products/<%= product.id %>" class="product-card">
+                <span class="product-category"><%= product.category || 'Uncategorised' %></span>
+                <h2 class="product-name"><%= product.name %></h2>
+                <p class="product-description"><%= product.description || 'No description available.' %></p>
+                <div class="product-footer">
+                    <span class="product-price">$<%= Number(product.price).toFixed(2) %></span>
+                    <span class="product-stock">
+                        <% if (product.stock > 0) { %>
+                            <%= product.stock %> in stock
+                        <% } else { %>
+                            Out of stock
+                        <% } %>
+                    </span>
+                </div>
+            </a>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('partials/footer') %>

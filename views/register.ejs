@@ -1,0 +1,41 @@
+<%- include('partials/header', { title: 'Register' }) %>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">Create account</h1>
+        <p class="auth-subtitle">Join us and start shopping</p>
+
+        <form method="POST" action="/register">
+
+            <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" name="first_name" autocomplete="given-name" class="form-input" placeholder="John" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" name="last_name" autocomplete="family-name" class="form-input" placeholder="Doe" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" autocomplete="email username" class="form-input" placeholder="john@email.com" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" autocomplete="new-password" class="form-input" placeholder="Min 6 characters" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                Create account
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Already have an account? <a href="/login">Sign in</a>
+        </p>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

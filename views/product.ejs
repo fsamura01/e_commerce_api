@@ -1,0 +1,75 @@
+<%- include('partials/header', { title: product.name, cartCount, user }) %>
+
+<a href="/products" class="btn btn-outline btn-sm" style="margin-bottom: 32px; display: inline-flex;">
+    ← Back to products
+</a>
+
+<div class="product-detail">
+
+    <!-- LEFT: image placeholder (no image uploads in this project) -->
+    <div class="product-image-placeholder">
+        <% const icons = { Electronics: '🎧', Clothing: '👕', Books: '📚', 'Home & Kitchen': '🍳', Sports: '🏃' }; %>
+        <%= icons[product.category] || '📦' %>
+    </div>
+
+    <!-- RIGHT: product info + add to cart -->
+    <div class="product-info">
+        <span class="product-category"><%= product.category || 'Uncategorised' %></span>
+        <h1 class="page-title" style="margin-bottom: 0"><%= product.name %></h1>
+        <p class="product-detail-price">$<%= Number(product.price).toFixed(2) %></p>
+        <p class="product-detail-desc">
+            <%= product.description || 'No description available.' %>
+        </p>
+
+        <p style="font-size: 13px; color: var(--muted)">
+            <% if (product.stock > 10) { %>
+                ✅ <%= product.stock %> in stock
+            <% } else if (product.stock > 0) { %>
+                ⚠️ Only <%= product.stock %> left
+            <% } else { %>
+                ❌ Out of stock
+            <% } %>
+        </p>
+
+        <!--
+            EJS NOTE: This form POSTs to /cart/add.
+            The product_id is a hidden input — the user
+            does not see it but it gets sent to the server.
+            quantity comes from the number input the user controls.
+        -->
+        <% if (product.stock > 0) { %>
+            <form method="POST" action="/cart/add">
+                <input type="hidden" name="product_id" value="<%= product.id %>">
+                <div class="qty-control">
+                    <label class="form-label" style="margin: 0">Qty</label>
+                    <input
+                        type="number"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        max="<%= product.stock %>"
+                        class="qty-control input"
+                        style="width:64px;text-align:center;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:16px;outline:none;"
+                    />
+                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                </div>
+            </form>
+        <% } else { %>
+            <button class="btn btn-outline" disabled>Out of stock</button>
+        <% } %>
+
+        <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem; opacity: 0.8;">Admin Actions</h3>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="/admin/products/edit/<%= product.id %>" class="btn btn-outline" style="flex:1; text-align:center;">Edit Product</a>
+                    <form action="/admin/products/delete/<%= product.id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');" style="flex:1;">
+                        <button type="submit" class="btn" style="background-color: #ef4444; color: white; border: none; width: 100%;">Delete Product</button>
+                    </form>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

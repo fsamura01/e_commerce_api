@@ -156,7 +156,8 @@ const confirmOrder = async (req, res) => {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    // STEP 4: Fetch the cart one more time to get current items
+    // STEP 4:
+    // Fetch the cart one more time to get current items
     const cartResult = await db.query(
       `SELECT
                 ci.product_id,

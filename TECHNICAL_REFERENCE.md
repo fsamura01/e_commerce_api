@@ -113,9 +113,42 @@ Routers allow us to build the API like a Lego set—organized and modular.
 
 ---
 
+## 🖼️ 7. Frontend View Rendering Mechanism (EJS)
+When building the Admin UI (e.g., adding a new product), we use Express paired with the EJS template engine to serve dynamic HTML.
 
+Here is the exact lifecycle of a frontend UI requested by the browser, using "Add Product" (`/admin/products/new`) as an example:
 
-## 🧪 7. Verification Checklist
+### **1. The Browser Request (Link Click)**
+When an admin clicks the `+ Add Product` link in the Navigation bar, their browser makes an HTTP **GET** request to the URL `/admin/products/new`.
+
+### **2. The Route Listener (`frontend.js`)**
+Inside `server/src/routes/frontend.js`, we define a listener for this specific request:
+```javascript
+router.get('/admin/products/new', async (req, res) => {
+    // 1. Grab auth token from cookies
+    const token = req.cookies?.token;
+    
+    // 2. Fetch required data (cart count, categories)
+    const cartCount = await getCartCount(token);
+    const categoriesRes = await axios.get(`${API}/categories`);
+    
+    // 3. Trigger Express to render the HTML view
+    res.render('admin_add_product', {
+        categories: categoriesRes.data.categories,
+        cartCount
+    });
+});
+```
+
+### **3. The Built-in `res.render()` Magic**
+Because our main `app.js` file has EJS configured as its "view engine" (`app.set('view engine', 'ejs')`), Express automatically knows to look inside your `views/` directory for a file named `admin_add_product.ejs`.
+
+### **4. Merging the Data and Serving HTML**
+Express takes the `admin_add_product.ejs` template and physically injects the data object we provided into the template's `<%= %>` brackets. For example, it loops over the `categories` array to generate the `<option>` tags. Finally, Express takes that newly compiled raw HTML and sends it back for the user's browser to read and display!
+
+---
+
+## 🧪 8. Verification Checklist
 When testing a new feature:
 1. **Restart Server**: `npm run dev` (monitors file changes).
 2. **Environment**: Ensure `.env` contains all keys from `.env.example`.

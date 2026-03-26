@@ -1,0 +1,95 @@
+<%- include('partials/header', { title: 'Your Cart', cartCount, user }) %>
+
+<h1 class="page-title">Your Cart</h1>
+<p class="page-subtitle"><%= items.length %> item<%= items.length !== 1 ? 's' : '' %></p>
+
+<% if (items.length === 0) { %>
+    <div class="empty-state">
+        <div class="empty-state-icon">🛒</div>
+        <p class="empty-state-text">Your cart is empty</p>
+        <p class="empty-state-sub">Add some products to get started</p>
+        <a href="/products" class="btn btn-primary">Browse products</a>
+    </div>
+<% } else { %>
+
+<div class="cart-layout">
+
+    <!-- LEFT: cart items list -->
+    <div class="cart-items">
+        <% items.forEach(item => { %>
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <p class="cart-item-name"><%= item.name %></p>
+                <p class="cart-item-price">$<%= Number(item.price).toFixed(2) %> each</p>
+            </div>
+
+            <!--
+                EJS NOTE: Two separate forms in one card.
+                Form 1 — updates the quantity (POST with new qty)
+                Form 2 — removes the item entirely (POST with product_id)
+                Both use POST because HTML forms only support GET/POST.
+                Your Express route checks which action was taken.
+            -->
+
+            <!-- Update quantity form -->
+            <form method="POST" action="/cart/update" class="cart-qty-form">
+                <input type="hidden" name="product_id" value="<%= item.product_id %>">
+                <input
+                    type="number"
+                    name="quantity"
+                    value="<%= item.quantity %>"
+                    min="1"
+                    max="<%= item.stock %>"
+                    class="cart-qty-input"
+                    onchange="this.form.submit()"
+                />
+            </form>
+
+            <span class="cart-item-subtotal">$<%= Number(item.subtotal).toFixed(2) %></span>
+
+            <!-- Remove item form -->
+            <form method="POST" action="/cart/remove">
+                <input type="hidden" name="product_id" value="<%= item.product_id %>">
+                <button type="submit" class="btn btn-danger">✕</button>
+            </form>
+        </div>
+        <% }) %>
+    </div>
+
+    <!-- RIGHT: order summary -->
+    <div class="order-summary">
+        <h2 class="summary-title">Order Summary</h2>
+
+        <% items.forEach(item => { %>
+        <div class="summary-row">
+            <span class="summary-label"><%= item.name %> × <%= item.quantity %></span>
+            <span>$<%= Number(item.subtotal).toFixed(2) %></span>
+        </div>
+        <% }) %>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span>$<%= Number(cart_total).toFixed(2) %></span>
+        </div>
+
+        <hr class="divider" style="margin: 16px 0">
+
+        <% if (user) { %>
+            <a href="/checkout" class="btn btn-primary btn-block">
+                Proceed to Checkout →
+            </a>
+        <% } else { %>
+            <a href="/login" class="btn btn-primary btn-block">
+                Login to Checkout →
+            </a>
+        <% } %>
+
+        <a href="/products" class="btn btn-outline btn-block" style="margin-top: 10px">
+            Continue Shopping
+        </a>
+    </div>
+
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

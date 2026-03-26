@@ -38,8 +38,7 @@ INSERT INTO categories (name, description) VALUES
 INSERT INTO users (email, password_hash, first_name, last_name, role) VALUES
     (
         'admin@myshop.com',
-        '$2b$10$TY8CGrecXP390vlpIIQqIuxSfqLhrffmO5fRy.UR60yHLIJXrr5Se
-        ',
+        '$2b$10$TY8CGrecXP390vlpIIQqIuxSfqLhrffmO5fRy.UR60yHLIJXrr5Se',
         'Admin',
         'User',
         'admin'
