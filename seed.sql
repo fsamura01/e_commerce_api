@@ -11,10 +11,6 @@
 --  TO RESET AND RESEED:
 --    psql -U ecommerce_user -d ecommerce_db -f schema.sql
 --    psql -U ecommerce_user -d ecommerce_db -f seed.sql
--- Make sure the schema exists and use it
-CREATE SCHEMA IF NOT EXISTS ecommerce;
-SET search_path TO ecommerce, public;
-
 
 -- ============================================================
 -- SEED 1: categories

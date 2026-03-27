@@ -8,10 +8,6 @@
 --    psql -U ecommerce_user -d ecommerce_db -f schema.sql
 -- ============================================================
 
--- Make sure the schema exists and use it
-CREATE SCHEMA IF NOT EXISTS ecommerce;
-SET search_path TO ecommerce, public;
-
 
 -- ============================================================
 -- STEP 1: Drop tables in reverse order (so foreign keys don't block)
